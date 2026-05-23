@@ -15,10 +15,6 @@
 
 <br/>
 
-> *Proyek ini bersifat akademik untuk keperluan mata kuliah Pemrosesan Teks — bukan rekomendasi investasi.*
-
-<br/>
-
 ![Python](https://img.shields.io/badge/Python-3.10-blue?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=flat-square)
 ![Reviews](https://img.shields.io/badge/Reviews-6.000-orange?style=flat-square)
