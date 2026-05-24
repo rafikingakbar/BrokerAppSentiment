@@ -9,15 +9,19 @@
 <br/><br/>
 
 # Broker App Sentiment Analysis
-### Analisis & Perbandingan Sentimen Pengguna Aplikasi Sekuritas Ritel Indonesia
+### Sentiment Analysis & Comparison of Indonesian Retail Securities Broker Apps
 
 **Ajaib &nbsp;·&nbsp; IPOT &nbsp;·&nbsp; Stockbit** — via Google Play Store Reviews
 
 <br/>
 
+> *This is an academic project for a Text Processing course — not financial advice.*
+
+<br/>
+
 ![Python](https://img.shields.io/badge/Python-3.10-blue?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=flat-square)
-![Reviews](https://img.shields.io/badge/Reviews-6.000-orange?style=flat-square)
+![Reviews](https://img.shields.io/badge/Reviews-6,000-orange?style=flat-square)
 ![Model](https://img.shields.io/badge/Model-IndoRoBERTa-purple?style=flat-square)
 
 </div>
@@ -26,29 +30,29 @@
 
 ## Overview
 
-Aplikasi sekuritas ritel seperti **Ajaib**, **IPOT**, dan **Stockbit** memiliki jutaan pengguna aktif, namun persepsi pengguna terhadap kualitas layanan belum banyak dikaji secara sistematis. Proyek ini membangun pipeline lengkap dari **scraping hingga topic clustering** untuk menjawab:
+Retail securities apps like **Ajaib**, **IPOT**, and **Stockbit** serve millions of active users, yet user perception of their service quality has rarely been studied systematically. This project builds a complete pipeline from **scraping to topic clustering** to answer:
 
-- Bagaimana distribusi sentimen pengguna pada masing-masing aplikasi?
-- Apa saja tema keluhan utama yang paling sering muncul?
-- Aplikasi mana yang paling stabil berdasarkan ulasan pengguna?
+- How is user sentiment distributed across each app?
+- What are the most recurring complaint themes?
+- Which app performs most favorably based on user reviews?
 
 ---
 
 ## Pipeline
 
 ```
-Google Play Scraping 2.000 ulasan × 3 aplikasi = 6.000 total
-↓
-Text Preprocessing Lower Case → Remove HTML → Remove Punctuation
-→ Remove Emoji → Normalisasi Kata Non-Baku
-↓
-Sentiment Classification IndoRoBERTa (w11wo/indonesian-roberta-base-sentiment-classifier)
-↓
-Evaluation 300 label manual → Confusion Matrix · Accuracy · F1-Score
-↓
-Topic Clustering TF-IDF → K-Means (k=6) vs Agglomerative → PCA Visualization
-↓
-Analisis Tema Keluhan Per aplikasi berdasarkan top words cluster
+Google Play Scraping        2,000 reviews x 3 apps = 6,000 total
+        |
+Text Preprocessing          Lower Case -> Remove HTML -> Remove Punctuation
+                            -> Remove Emoji -> Word Normalization
+        |
+Sentiment Classification    IndoRoBERTa (w11wo/indonesian-roberta-base-sentiment-classifier)
+        |
+Evaluation                  300 manual labels -> Confusion Matrix, Accuracy, F1-Score
+        |
+Topic Clustering            TF-IDF -> K-Means (k=6) vs Agglomerative -> PCA Visualization
+        |
+Complaint Theme Analysis    Per app based on cluster top words
 ```
 
 ---
@@ -57,63 +61,61 @@ Analisis Tema Keluhan Per aplikasi berdasarkan top words cluster
 
 ```
 BrokerAppSentiment/
-
-notebook/
-broker_sentiment.ipynb # Full pipeline dalam satu notebook
-
-data/
-01_reviews_all_sekuritas_raw.csv # Raw scraping hasil
-02_reviews_data_normalized.csv # Setelah preprocessing
-03_reviews_data_SentimenLabelling.csv # Setelah auto-labelling
-04_evaluasi_300_data.csv # 300 data untuk evaluasi manual
-05_reviews_data_SentimenNegative.csv # Filter ulasan negatif
-
-assets/ # Visualisasi hasil analisis
-sentiment_distribution.png
-sentiment_piechart_negative.png
-wordcloud_positive.png
-wordcloud_negative.png
-confusion_matrix.png
-elbow_kmeans.png
-pca_scatter.png
-cluster_proportion.png
-
-README.md
-requirements.txt
+|
++-- notebook/
+|   +-- broker_sentiment.ipynb              # Full pipeline in a single notebook
+|
++-- data/
+|   +-- 01_reviews_all_sekuritas_raw.csv    # Raw scraping output
+|   +-- 02_reviews_data_normalized.csv      # After preprocessing
+|   +-- 03_reviews_data_SentimenLabelling.csv  # After auto-labelling
+|   +-- 04_evaluasi_300_data.csv            # 300 samples for manual evaluation
+|   +-- 05_reviews_data_SentimenNegative.csv   # Filtered negative reviews
+|
++-- assets/                                 # Result visualizations
+|   +-- sentiment_distribution.png
+|   +-- sentiment_piechart_negative.png
+|   +-- wordcloud_positive.png
+|   +-- wordcloud_negative.png
+|   +-- confusion_matrix.png
+|   +-- elbow_kmeans.png
+|   +-- pca_scatter.png
+|   +-- cluster_proportion.png
+|
++-- README.md
++-- requirements.txt
 ```
 
 ---
 
 ## Key Results
 
-### Distribusi Sentimen per Aplikasi
+### Sentiment Distribution per App
 
-| Aplikasi | Negatif | Netral | Positif |
-|:--------:|:---------:|:--------:|:---------:|
-| Ajaib | 743 | 291 | 962 |
-| IPOT | 414 | 157 | 1.421 |
-| Stockbit | 1.109 | 242 | 637 |
+| App      | Negative | Neutral | Positive |
+|:--------:|:--------:|:-------:|:--------:|
+| Ajaib    | 743      | 291     | 962      |
+| IPOT     | 414      | 157     | 1,421    |
+| Stockbit | 1,109    | 242     | 637      |
 
 ![Sentiment Distribution](assets/sentiment_distribution.png)
 
-> **IPOT** → ulasan positif tertinggi (71%) — aplikasi paling stabil 
-> **Stockbit** → ulasan negatif terbanyak (49%) — banyak keluhan error & login 
-> **Ajaib** → sentimen seimbang (32,8% negatif) — apresiasi dan keluhan muncul bersamaan
+> **IPOT** has the highest share of positive reviews (71%), while **Stockbit** has the highest negative rate (49%), and **Ajaib** shows a more balanced distribution (32.8% negative).
 
 ---
 
-### Evaluasi Model IndoRoBERTa
+### IndoRoBERTa Model Evaluation
 
 ![Confusion Matrix](assets/confusion_matrix.png)
 
-Model dievaluasi pada **300 label manual**. Performa terbaik pada kelas positif & negatif; kelas netral lebih sulit karena ulasan ambigu (ulasan singkat, kata positif dalam konteks keluhan).
+The model was evaluated on **300 manually labeled samples**. It performs best on positive and negative classes; the neutral class is harder to classify due to ambiguous reviews — short texts or positive words used in a complaint context.
 
 ---
 
-### WordCloud Sentimen
+### Sentiment WordCloud
 
-![WordCloud Positif](assets/wordcloud_positive.png)
-![WordCloud Negatif](assets/wordcloud_negative.png)
+![WordCloud Positive](assets/wordcloud_positive.png)
+![WordCloud Negative](assets/wordcloud_negative.png)
 
 ---
 
@@ -121,12 +123,12 @@ Model dievaluasi pada **300 label manual**. Performa terbaik pada kelas positif 
 
 ![PCA Scatter](assets/pca_scatter.png)
 
-| # | Tema | Cluster | Top Words |
-|---|------|:-------:|-----------|
-| 1 | Gangguan Sistem saat Open Market | 0 & 2 | error, eror, market, jam, open, pagi |
-| 2 | Performa & Dampak Update | 1 | lemot, parah, update, aplikasi |
-| 3 | Kendala Verifikasi & Akses Akun | 3 | verifikasi, akun, susah, login, daftar |
-| 4 | Kompleksitas Penggunaan Aplikasi | 4 | ribet, buka, saham, update |
+| # | Theme | Cluster | Top Words |
+|---|-------|:-------:|-----------|
+| 1 | System Disruption during Open Market | 0 & 2 | error, eror, market, jam, open, pagi |
+| 2 | Performance Issues & Update Impact | 1 | lemot, parah, update, aplikasi |
+| 3 | Verification & Account Access Problems | 3 | verifikasi, akun, susah, login, daftar |
+| 4 | App Complexity & Usability | 4 | ribet, buka, saham, update |
 
 ![Cluster Proportion](assets/cluster_proportion.png)
 
@@ -135,24 +137,24 @@ Model dievaluasi pada **300 label manual**. Performa terbaik pada kelas positif 
 ## How to Run
 
 ```bash
-# 1. Clone repo
+# 1. Clone the repo
 git clone https://github.com/rafikingakbar/BrokerAppSentiment.git
 cd BrokerAppSentiment
 
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Buka notebook
+# 3. Open the notebook
 jupyter notebook notebook/broker_sentiment.ipynb
 ```
 
-> Data sudah tersedia di folder `data/` — bagian scraping bisa dilewati, langsung mulai dari **Preprocessing**.
+> Data is already available in the `data/` folder — the scraping step can be skipped, start directly from **Preprocessing**.
 
 ---
 
 ## Tech Stack
 
-| Kategori | Library |
+| Category | Library |
 |----------|---------|
 | Scraping | `google-play-scraper` |
 | NLP & Preprocessing | `transformers`, `nltk`, `demoji` |
